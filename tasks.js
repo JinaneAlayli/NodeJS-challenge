@@ -9,6 +9,8 @@
  * @param  {string} name the name of the app
  * @returns {void}
  */
+
+
 function startApp(name){
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
@@ -33,18 +35,23 @@ function startApp(name){
  * @param  {string} text data typed by the user
  * @returns {void}
  */
+
+
 function onDataReceived(text) {
-  if (text === 'quit\n') {
+  text = text.trim();
+  if (text === 'quit'|| text==="exit") {
     quit();
   }
-  else if(text === 'hello\n'){
+  else if(text === 'hello'){
     hello();
+  }
+  else if(text==='help'){
+    help();
   }
   else{
     unknownCommand(text);
   }
 }
-
 
 /**
  * prints "unknown command"
@@ -53,6 +60,8 @@ function onDataReceived(text) {
  * @param  {string} c the text received
  * @returns {void}
  */
+
+
 function unknownCommand(c){
   console.log('unknown command: "'+c.trim()+'"')
 }
@@ -73,10 +82,25 @@ function hello(){
  *
  * @returns {void}
  */
+
+
 function quit(){
   console.log('Quitting now, goodbye!')
   process.exit();
 }
 
+/**
+ * display information about user commands and  their descriptions.
+ *
+ * @returns {void}
+ */
+
+function help() {
+  console.log("Available commands:");
+  console.log("hello to Offers a friendly introduction.");
+  console.log("quit or exit  to Exits the application.");
+  console.log("help  to Lists all available commands.");
+}
+
 // The following line starts the application
-startApp("Jad Sarout")
+startApp("Jinane")

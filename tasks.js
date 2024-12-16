@@ -74,7 +74,11 @@ function unknownCommand(c){
  */
 function hello(text){
 
-  console.log('hello '+text.slice(6)+'!')
+  if(text.slice(6)!="")
+  console.log('hello '+text.slice(6)+'!');
+else
+console.log('hello!');
+
 }
 
 

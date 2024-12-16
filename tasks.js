@@ -102,7 +102,7 @@ function quit(){
 
 function help() {
   console.log("Available commands:");
-  console.log("hello to Offers a friendly introduction.");
+  console.log("hello [name]  to Say hello to the given name");
   console.log("quit or exit  to Exits the application.");
   console.log("help  to Lists all available commands.");
 }

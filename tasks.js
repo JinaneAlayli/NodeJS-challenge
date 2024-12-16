@@ -42,8 +42,8 @@ function onDataReceived(text) {
   if (text === 'quit'|| text==="exit") {
     quit();
   }
-  else if(text === 'hello'){
-    hello();
+  else if(text.startsWith('hello')){
+    hello(text);
   }
   else if(text==='help'){
     help();
@@ -72,8 +72,9 @@ function unknownCommand(c){
  *
  * @returns {void}
  */
-function hello(){
-  console.log('hello!')
+function hello(text){
+
+  console.log('hello '+text.slice(6)+'!')
 }
 
 

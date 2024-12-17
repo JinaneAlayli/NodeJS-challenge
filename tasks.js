@@ -1,3 +1,46 @@
+/**
+ * Json part
+ */
+
+const fs = require('fs');
+ 
+let databaseFile = "database.json";
+let tasks=[];
+ 
+if (process.argv[2]) {
+  databaseFile = process.argv[2];
+}
+
+function loadTasks() {
+  try {
+    if (!fs.existsSync(databaseFile)) {
+      fs.writeFileSync(databaseFile, JSON.stringify([], null, 2), 'utf8');
+      console.log("No saved tasks found, creating new file.");
+    } else {
+      const data = fs.readFileSync(databaseFile, 'utf8');
+      tasks = JSON.parse(data);
+      if (tasks.length===0)
+        console.log("loaded file successfully with empty tasks.");
+        else
+      console.log("Tasks loaded successfully.");
+    }
+  } catch (error) {
+    console.log("Error loading tasks:", error);
+  }
+}
+
+ 
+function saveTasks() {
+  try {
+    const data = JSON.stringify(tasks, null, 2); 
+    fs.writeFileSync(databaseFile, data, 'utf8');
+    console.log("Tasks saved successfully.");
+  } catch (error) {
+    console.log("Error saving tasks:", error);
+  }
+}
+ 
+//process.on('exit', saveTasks);
 
 /**
  * Starts the application
@@ -16,8 +59,9 @@ function startApp(name){
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', onDataReceived);
-  console.log(`Welcome to ${name}'s application!`)
-  console.log("--------------------")
+  console.log(`Welcome to ${name}'s application!`);
+  console.log("--------------------");
+  loadTasks(); 
 }
 
 
@@ -110,6 +154,7 @@ console.log('hello!');
 
 
 function quit(){
+  saveTasks();
   console.log('Quitting now, goodbye!')
   process.exit();
 }
@@ -122,35 +167,45 @@ function quit(){
 
 function help() {
   console.log("Available commands:");
-  console.log("hello [name]  to Say hello to the given name");
-  console.log("quit or exit  to Exits the application.");
-  console.log("help  to Lists all available commands.");
-  console.log("tasks           - List all tasks with their numbers");
-  console.log("add [task]     - Add a new task to the list");
-  console.log("remove [index] - Remove the task at the given index. If no index is provided, remove the last task.");
-  console.log("edit new text   -should change the *last* task to \"new text\"\nedit 1 new text   -should change the task 1 to \"new text\"");
-  console.log("check [index]   - Mark task [index] as done.");
-  console.log("uncheck [index] - Mark task [index] as not done.");
+  console.log("-------")
+  console.log("1.hello [name]  to Say hello to the given name");
+  console.log("-------")
+  console.log("2.quit or exit  to Exits the application.");
+  console.log("-------")
+  console.log("3.help  to Lists all available commands.");
+  console.log("-------")
+  console.log("4.tasks           - List all tasks with their numbers");
+  console.log("-------")
+  console.log("5.add [task]     - Add a new task to the list");
+  console.log("-------")
+  console.log("6.remove [index] - Remove the task at the given index. If no index is provided, remove the last task.");
+  console.log("-------");
+  console.log("7.edit new text   -should change the *last* task to \"new text\"\nedit 1 new text   -should change the task 1 to \"new text\"");
+  console.log("-------");
+  console.log("8.check [index]   - Mark task [index] as done.");
+  console.log("-------")
+  console.log("9.uncheck [index] - Mark task [index] as not done.");
   console.log("--------------------")
 }
 
 //list of tasks
 //let tasks = ["Task 1", "Task 2", "Task 3"]; 
-let tasks = [{ text: "Task 1", done: false }, { text: "Task 2", done: false }, { text: "Task 3", done: false }];
+//let tasks = [{ text: "Task 1", done: false }, { text: "Task 2", done: false }, { text: "Task 3", done: false }];
 
 
 //function to see tasks
 function listTasks() {
-  let status = "[ ]"; // Default status
-
   if (tasks.length === 0) 
     console.log("No tasks available.");
   else
    {
     for (let i = 0; i < tasks.length; i++) 
       {
-        if (tasks[i].done) 
+        let status = "[ ]";
+        if (tasks[i].done)
+          {
             status = "[✓]";
+          }
         //console.log((i+1)+". " +tasks[i]);
         console.log((i + 1) + ". " + status + " " + tasks[i].text);
       }
@@ -189,7 +244,8 @@ function removeTask(text) {
 }
 //edit task
 function editTask(text) {
-
+  if(tasks.length>0)
+  {
   if (text=="") {
     console.log("Error:  Type 'help' for more information.");
     return;
@@ -212,24 +268,30 @@ function editTask(text) {
           console.log(`Updated task ${parts[0]} to: "${newText}"`);
         }else console.log("Error: Invalid text.");
     }
+  }else console.log("Error: No tasks to edit.");
 }
 
 //check
 function checkTask(text) {
-  if (text === "") {
-    console.log("Error: Please provide a task number.");
-  } else {
-    let index = parseInt(text);
-    if (isNaN(index) || index < 1 || index > tasks.length) {
-      console.log("Error: Invalid task number.");
+  if(tasks.length>0)
+    {
+    if (text === "") {
+      console.log("Error: Please provide a task number.");
     } else {
-      tasks[index - 1].done = true;
-      console.log(`Task ${index} marked as done.`);
+      let index = parseInt(text);
+      if (isNaN(index) || index < 1 || index > tasks.length) {
+        console.log("Error: Invalid task number.");
+      } else {
+        tasks[index - 1].done = true;
+        console.log(`Task ${index} marked as done.`);
+      }
     }
-  }
+  }else console.log("Error: No tasks to edit.");
 }
 //uncheck
 function uncheckTask(text) {
+  if(tasks.length>0)
+    {
   if (text === "") {
     console.log("Error: Please provide a task number.");
   } else {
@@ -241,6 +303,7 @@ function uncheckTask(text) {
       console.log(`Task ${index} marked as not done.`);
     }
   }
+}else console.log("Error: No tasks to edit.");
 }
 
 
